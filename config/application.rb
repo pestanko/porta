@@ -104,8 +104,8 @@ module System
     config.assets.enabled = true
 
     config.assets.precompile = []
-    config.assets.precompile << ->(path) do
-      basename = File.basename(path)
+    config.assets.precompile << ->(filename, _path) do
+      basename = File.basename(filename)
 
       extname = File.extname(basename)
 
