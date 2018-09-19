@@ -32,6 +32,7 @@ class Service < ApplicationRecord
   before_destroy :stop_destroy_if_last_or_default
   before_destroy :destroy_features
   after_destroy :update_account_default_service
+  after_destroy :achieve_as_deleted # TODO: keep in mind http://api.rubyonrails.org/classes/ActiveRecord/Callbacks.html
 
   with_options(dependent: :destroy, inverse_of: :service) do |service|
     service.has_many :service_plans, as: :issuer, &DefaultPlanProxy
@@ -94,6 +95,9 @@ class Service < ApplicationRecord
 
   scope :accessible, -> { where.not(state: DELETE_STATE) }
   scope :deleted, -> { where(state: DELETE_STATE) }
+
+  has_many :deleted_objects, class_name: 'DeletedObjectEntry', as: :owner
+
   scope :of_approved_accounts, -> { joins(:account).merge(Account.approved) }
   scope(:permitted_for_user, lambda do |user|
     # TODO: this is probably wrong...
@@ -229,6 +233,13 @@ class Service < ApplicationRecord
     else
       raise "unknown backend_authentication_type: #{type}"
     end
+  end
+
+  def deleted_metrics
+    deleted_objects.metrics
+  end
+  def deleted_services
+    deleted_objects.services
   end
 
   # shouldn't be here .last (?)
@@ -508,6 +519,10 @@ class Service < ApplicationRecord
     if state_changed? && deleted? && !@deleted_by_state_machine
       System::ErrorReporting.report_error('Service has been deleted without using State Machine')
     end
+  end
+
+  def achieve_as_deleted
+    ::DeletedObjectEntry.create!(object: self, owner: account)
   end
 
   def destroyable?
