@@ -47,7 +47,7 @@ end
 require 'cucumber/rails'
 require 'cucumber/rails/rspec'
 
-require 'factory_girl/step_definitions'
+require 'factory_bot/step_definitions'
 
 # require 'cucumber/rails/capybara_javascript_emulation' # Lets you click links with onclick javascript handlers without using @culerity or @javascript
 #

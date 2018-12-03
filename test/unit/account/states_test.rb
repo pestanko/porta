@@ -2,7 +2,7 @@ require 'test_helper'
 
 class Account::StatesTest < ActiveSupport::TestCase
   test '.without_deleted' do
-    accounts = FactoryGirl.create_list(:simple_account, 2)
+    accounts = FactoryBot.create_list(:simple_account, 2)
     accounts.first.schedule_for_deletion!
 
     ids_without_deleted = Account.without_deleted.pluck(:id)
@@ -15,7 +15,7 @@ class Account::StatesTest < ActiveSupport::TestCase
   end
 
   def test_events_when_state_changed
-    account = FactoryGirl.create(:simple_account)
+    account = FactoryBot.create(:simple_account)
 
     Accounts::AccountStateChangedEvent.expects(:create)
                                       .with(account, 'approved').once
@@ -28,7 +28,7 @@ class Account::StatesTest < ActiveSupport::TestCase
   end
 
   def test_events_when_state_not_changed
-    account = FactoryGirl.create(:simple_account)
+    account = FactoryBot.create(:simple_account)
     account.schedule_for_deletion!
 
     Accounts::AccountStateChangedEvent.expects(:create)
@@ -137,7 +137,7 @@ class Account::StatesTest < ActiveSupport::TestCase
   end
 
   def test_suspend_master
-    account = FactoryGirl.build_stubbed(:simple_provider, master: true)
+    account = FactoryBot.build_stubbed(:simple_provider, master: true)
     assert_raise StateMachines::InvalidTransition do
       account.suspend!
     end
@@ -161,7 +161,7 @@ class Account::StatesTest < ActiveSupport::TestCase
   end
 
   test '.deleted_since' do
-    accounts = FactoryGirl.create_list(:simple_account, 3)
+    accounts = FactoryBot.create_list(:simple_account, 3)
 
     account_deleted_recently = accounts[0]
     account_deleted_recently.schedule_for_deletion!
@@ -180,7 +180,7 @@ class Account::StatesTest < ActiveSupport::TestCase
   end
 
   test '.deletion_date' do
-    account = FactoryGirl.create(:simple_account)
+    account = FactoryBot.create(:simple_account)
     account.schedule_for_deletion!
     assert_equal Account::States::PERIOD_BEFORE_DELETION.from_now.to_date, account.deletion_date.to_date
   end
@@ -189,7 +189,7 @@ class Account::StatesTest < ActiveSupport::TestCase
     disable_transactional_fixtures!
 
     def test_suspend
-      account = FactoryGirl.create(:provider_account)
+      account = FactoryBot.create(:provider_account)
 
       ThreeScale::Analytics.expects(:track).with(account.first_admin, 'Account Suspended')
       ReverseProviderKeyWorker.expects(:enqueue).with(account)
@@ -198,7 +198,7 @@ class Account::StatesTest < ActiveSupport::TestCase
     end
 
     def test_resume_from_suspended
-      account = FactoryGirl.create(:provider_account)
+      account = FactoryBot.create(:provider_account)
       account.update_columns(state: 'suspended')
 
       ThreeScale::Analytics.expects(:track).with(account.first_admin, 'Account Resumed')
@@ -208,7 +208,7 @@ class Account::StatesTest < ActiveSupport::TestCase
     end
 
     def test_resume_from_scheduled_for_deletion
-      account = FactoryGirl.create(:simple_provider)
+      account = FactoryBot.create(:simple_provider)
       account.schedule_for_deletion!
 
       BackendProviderSyncWorker.expects(:enqueue).with(account.id)
@@ -217,7 +217,7 @@ class Account::StatesTest < ActiveSupport::TestCase
     end
 
     def test_schedule_for_deletion
-      account = FactoryGirl.create(:simple_provider)
+      account = FactoryBot.create(:simple_provider)
       refute account.scheduled_for_deletion?
 
       BackendProviderSyncWorker.expects(:enqueue).with(account.id)
@@ -226,7 +226,7 @@ class Account::StatesTest < ActiveSupport::TestCase
     end
 
     def test_state_changed_at_from_any_to_any
-      account = FactoryGirl.create(:simple_provider, state: :created)
+      account = FactoryBot.create(:simple_provider, state: :created)
 
       %i[make_pending! reject! approve! suspend! resume! schedule_for_deletion!].each do |transition|
         Timecop.freeze do

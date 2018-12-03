@@ -3,7 +3,7 @@ require 'test_helper'
 class User::PermissionsTest < ActiveSupport::TestCase
 
   test 'has_permission' do
-    user = FactoryGirl.build_stubbed(:simple_user)
+    user = FactoryBot.build_stubbed(:simple_user)
 
     refute user.has_permission?(:plans)
 
@@ -13,7 +13,7 @@ class User::PermissionsTest < ActiveSupport::TestCase
   end
 
   test 'admin_sections=' do
-    user = FactoryGirl.create(:simple_user)
+    user = FactoryBot.create(:simple_user)
     permissions_count = MemberPermission.method(:count)
 
     assert user.admin_sections.empty?
@@ -34,7 +34,7 @@ class User::PermissionsTest < ActiveSupport::TestCase
 
   # this is used from the UI
   test 'member_permission_ids=' do
-    user = FactoryGirl.build_stubbed(:simple_user)
+    user = FactoryBot.build_stubbed(:simple_user)
 
     user.member_permission_ids = nil
 
@@ -46,7 +46,7 @@ class User::PermissionsTest < ActiveSupport::TestCase
 
 
   test 'member_permission_service_ids=' do
-    user = FactoryGirl.build_stubbed(:simple_user, admin_sections: [:services])
+    user = FactoryBot.build_stubbed(:simple_user, admin_sections: [:services])
 
     refute user.has_access_to_service?(42)
     assert_equal 1, user.admin_sections.size
@@ -61,7 +61,7 @@ class User::PermissionsTest < ActiveSupport::TestCase
   end
 
   test 'services_member_permission' do
-    user = FactoryGirl.build_stubbed(:simple_user)
+    user = FactoryBot.build_stubbed(:simple_user)
 
     refute user.services_member_permission
 
@@ -71,7 +71,7 @@ class User::PermissionsTest < ActiveSupport::TestCase
   end
 
   test 'has_access_to_service?' do
-    user = FactoryGirl.build_stubbed(:simple_user, admin_sections: [:services])
+    user = FactoryBot.build_stubbed(:simple_user, admin_sections: [:services])
     refute user.has_access_to_service?(42)
 
     user.admin_sections = [:services]
@@ -84,7 +84,7 @@ class User::PermissionsTest < ActiveSupport::TestCase
   end
 
   test 'has_access_to_all_services?' do
-    user = FactoryGirl.build_stubbed(:simple_user)
+    user = FactoryBot.build_stubbed(:simple_user)
     assert user.has_access_to_all_services?
 
     user.admin_sections = [:services]
@@ -99,7 +99,7 @@ class User::PermissionsTest < ActiveSupport::TestCase
   end
 
   test '#forbidden_some_services?' do
-    user = FactoryGirl.build(:simple_user)
+    user = FactoryBot.build(:simple_user)
 
     user.stubs(has_access_to_all_services?: true)
     user.account.stubs(provider_can_use?: true)

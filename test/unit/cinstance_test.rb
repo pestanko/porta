@@ -482,29 +482,29 @@ class CinstanceTest < ActiveSupport::TestCase
   end
 
   test 'notify_about_expired_trial_periods' do
-    FactoryGirl.create(:cinstance)
+    FactoryBot.create(:cinstance)
     Cinstance.update_all(trial_period_expires_at: Time.zone.now)
     assert Cinstance.notify_about_expired_trial_periods
   end
 
   test 'with_trial_period_expired_or_accepted' do
-    FactoryGirl.create(:cinstance)
+    FactoryBot.create(:cinstance)
     Cinstance.update_all(trial_period_expires_at: Date.today)
     assert_equal Cinstance.with_trial_period_expired_or_accepted(Date.today).count, Cinstance.count
   end
 
   test 'with_trial_period_expired' do
-    FactoryGirl.create(:cinstance)
+    FactoryBot.create(:cinstance)
     Cinstance.update_all(trial_period_expires_at: Date.today)
     assert_equal Cinstance.with_trial_period_expired(Date.today).count, Cinstance.count
   end
 
   test 'Cinstance.notify_about_expired_trial_periods does not send anything if plan is free' do
     Timecop.travel(2009, 11, 4) do
-      provider_account = FactoryGirl.create(:provider_account)
-      plan = FactoryGirl.create(:application_plan, :issuer => provider_account.first_service!,
+      provider_account = FactoryBot.create(:provider_account)
+      plan = FactoryBot.create(:application_plan, :issuer => provider_account.first_service!,
                      :trial_period_days => 30, :cost_per_month => 0)
-      cinstance = FactoryGirl.create(:cinstance, :plan => plan)
+      cinstance = FactoryBot.create(:cinstance, :plan => plan)
     end
 
     Timecop.travel(2009, 11, 24) do
@@ -532,7 +532,7 @@ class CinstanceTest < ActiveSupport::TestCase
 
   test 'user_key has to be unique per provider account' do
     provider_account = Factory(:provider_account)
-    plan = FactoryGirl.create(:application_plan, :issuer => provider_account.first_service!)
+    plan = FactoryBot.create(:application_plan, :issuer => provider_account.first_service!)
 
     cinstance_one = Factory(:cinstance, :plan => plan, :user_key => 'foo')
     cinstance_two = Factory.build(:cinstance, :plan => plan, :user_key => 'foo')
@@ -547,18 +547,18 @@ class CinstanceTest < ActiveSupport::TestCase
   test 'user_key may be duplicated per service' do
     Logic::RollingUpdates.stubs(enabled?: true)
 
-    provider = FactoryGirl.create(:provider_account)
-    plan_1   = FactoryGirl.create(:application_plan,
-                issuer: FactoryGirl.create(:service, account: provider))
-    plan_2   = FactoryGirl.create(:application_plan,
-                issuer: FactoryGirl.create(:service, account: provider))
+    provider = FactoryBot.create(:provider_account)
+    plan_1   = FactoryBot.create(:application_plan,
+                issuer: FactoryBot.create(:service, account: provider))
+    plan_2   = FactoryBot.create(:application_plan,
+                issuer: FactoryBot.create(:service, account: provider))
 
     Rails.configuration.three_scale.rolling_updates.stubs(features: {duplicate_user_key: []})
-    assert FactoryGirl.create(:cinstance, plan: plan_1, user_key: 'foo')
-    refute FactoryGirl.build(:cinstance, plan: plan_2, user_key: 'foo').valid?
+    assert FactoryBot.create(:cinstance, plan: plan_1, user_key: 'foo')
+    refute FactoryBot.build(:cinstance, plan: plan_2, user_key: 'foo').valid?
 
     Rails.configuration.three_scale.rolling_updates.stubs(features: {duplicate_user_key: [provider.id]})
-    assert FactoryGirl.build(:cinstance, plan: plan_2, user_key: 'foo').valid?
+    assert FactoryBot.build(:cinstance, plan: plan_2, user_key: 'foo').valid?
   end
 
   test 'user_key does not have to be unique if provider accounts are different' do
@@ -879,14 +879,14 @@ class CinstanceTest < ActiveSupport::TestCase
   end
 
   test 'application_id uniqueness' do
-    provider = FactoryGirl.create(:provider_account)
+    provider = FactoryBot.create(:provider_account)
     service_one = provider.first_service!
-    service_two = FactoryGirl.create(:service, account: provider)
-    plan_one = FactoryGirl.create(:application_plan, issuer: service_one)
-    plan_two = FactoryGirl.create(:application_plan, issuer: service_two)
+    service_two = FactoryBot.create(:service, account: provider)
+    plan_one = FactoryBot.create(:application_plan, issuer: service_one)
+    plan_two = FactoryBot.create(:application_plan, issuer: service_two)
 
-    app_one = FactoryGirl.create(:cinstance, plan: plan_one, application_id: 'app1')
-    app_two = FactoryGirl.create(:cinstance, plan: plan_two, application_id: 'app2')
+    app_one = FactoryBot.create(:cinstance, plan: plan_one, application_id: 'app1')
+    app_two = FactoryBot.create(:cinstance, plan: plan_two, application_id: 'app2')
 
     dup = app_one.dup
     dup.user_key = 'fobar'
@@ -917,7 +917,7 @@ class CinstanceTest < ActiveSupport::TestCase
   end
 
   test '.not_bought_by' do
-    FactoryGirl.create(:cinstance, service: master_account.default_service)
+    FactoryBot.create(:cinstance, service: master_account.default_service)
 
     expected_cinstance_ids = Cinstance.where.has { user_account_id != Account.master.id }.pluck(:id)
     assert_same_elements expected_cinstance_ids, Cinstance.not_bought_by(master_account).pluck(:id)

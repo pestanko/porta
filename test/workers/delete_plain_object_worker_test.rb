@@ -6,7 +6,7 @@ class DeletePlainObjectWorkerTest < ActiveSupport::TestCase
   class DestroyableObjectsTest < DeletePlainObjectWorkerTest
     def setup
       factory_names = %i[simple_provider service application_plan metric]
-      @objects = factory_names.map { |factory_name| FactoryGirl.create(factory_name) }
+      @objects = factory_names.map { |factory_name| FactoryBot.create(factory_name) }
     end
 
     attr_reader :objects
@@ -30,7 +30,7 @@ class DeletePlainObjectWorkerTest < ActiveSupport::TestCase
 
   class UndestroyableObjectsTest < DeletePlainObjectWorkerTest
     def setup
-      @object = FactoryGirl.create(:service)
+      @object = FactoryBot.create(:service)
       @object.stubs(:destroyable?).returns(false)
     end
 

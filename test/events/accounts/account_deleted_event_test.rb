@@ -4,7 +4,7 @@ class Accounts::AccountDeletedEventTest < ActiveSupport::TestCase
   disable_transactional_fixtures!
 
   def test_create
-    account = FactoryGirl.build_stubbed(:simple_buyer, id: 1, provider_account_id: 2)
+    account = FactoryBot.build_stubbed(:simple_buyer, id: 1, provider_account_id: 2)
     event   = Accounts::AccountDeletedEvent.create(account)
 
     assert event
@@ -14,9 +14,9 @@ class Accounts::AccountDeletedEventTest < ActiveSupport::TestCase
   end
 
   def test_destroy
-    current_user = User.current = FactoryGirl.create(:simple_user)
+    current_user = User.current = FactoryBot.create(:simple_user)
 
-    account = FactoryGirl.create(:provider_account)
+    account = FactoryBot.create(:provider_account)
     user = account.users.first!
 
     event = Accounts::AccountDeletedEvent.create(account)
