@@ -1,5 +1,5 @@
 /** @jsx StatsUI.dom */
-import 'core-js/fn/symbol/iterator' // make Symbol work on IE 11
+
 import moment from 'moment'
 import 'moment-timezone'
 
