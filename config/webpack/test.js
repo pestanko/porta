@@ -10,8 +10,7 @@ const customRules = {
           {
             loader: 'babel-loader',
             options: {
-              presets: ['es2015', 'react'],
-              plugins: ['transform-object-rest-spread', 'transform-class-properties', 'transform-es2015-destructuring']
+              babelrc: true
             }
           }
         ]
