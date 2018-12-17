@@ -1,6 +1,7 @@
 const environment = require('./environment')
 
 const customRules = {
+  entry: [ '@babel/polyfill' ],
   module: {
     rules: [
       {

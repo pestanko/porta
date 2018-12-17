@@ -120,7 +120,6 @@ PATH
 
 GEM
   remote: https://rubygems.org/
-  remote: https://gems.contribsys.com/
   specs:
     3scale_client (2.6.1)
       nokogiri
@@ -180,9 +179,6 @@ GEM
       rails (>= 3.0)
     aggregate_root (0.3.6)
       activesupport (>= 3.0)
-    airbrake (4.3.8)
-      builder
-      multi_json
     analytics-ruby (2.0.13)
     ansi (1.5.0)
     arel (6.0.4)
@@ -466,10 +462,6 @@ GEM
     net-http-digest_auth (1.4)
     net-http-persistent (2.9.4)
     netrc (0.11.0)
-    newrelic-redis (2.0.2)
-      newrelic_rpm (~> 3.11)
-      redis (< 4.0)
-    newrelic_rpm (3.18.1.330)
     nokogiri (1.8.5)
       mini_portile2 (~> 2.3.0)
     non-stupid-digest-assets (1.0.5)
@@ -537,7 +529,7 @@ GEM
       ruby-openid (>= 2.1.8)
     rack-protection (1.5.3)
       rack
-    rack-proxy (0.6.4)
+    rack-proxy (0.6.5)
       rack
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -619,8 +611,6 @@ GEM
       roar (>= 1.0.0, <= 1.1.0)
       test_xml (>= 0.1.6)
       uber (>= 0.0.5)
-    rpm_contrib (2.2.0)
-      newrelic_rpm (>= 3.1.1)
     rspec (2.99.0)
       rspec-core (~> 2.99.0)
       rspec-expectations (~> 2.99.0)
@@ -690,6 +680,8 @@ GEM
       connection_pool (~> 2.2, >= 2.2.0)
       rack-protection (>= 1.5.0)
       redis (~> 3.2, >= 3.2.1)
+    sidekiq-batch (0.1.5)
+      sidekiq (>= 3)
     sidekiq-cron (0.4.5)
       redis-namespace (>= 1.5.2)
       rufus-scheduler (>= 2.0.24)
@@ -697,8 +689,6 @@ GEM
     sidekiq-lock (0.3.1)
       redis (>= 3.0.5)
       sidekiq (>= 2.14.0)
-    sidekiq-pro (3.7.1)
-      sidekiq (>= 4.1.5)
     sidekiq-prometheus-exporter (0.1.6)
       sidekiq (>= 3.3.1)
     signet (0.5.1)
@@ -812,7 +802,7 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
-    webpacker (3.3.1)
+    webpacker (3.5.5)
       activesupport (>= 4.2)
       rack-proxy (>= 0.6.1)
       railties (>= 4.2)
@@ -846,7 +836,6 @@ DEPENDENCIES
   acts_as_tree
   addressable
   after_commit_queue (~> 1.1.0)
-  airbrake (~> 4.3.3)
   analytics-ruby
   audited-activerecord
   aws-sdk (~> 2)
@@ -919,8 +908,6 @@ DEPENDENCIES
   money (= 6.7.1)
   multi_fetch_fragments!
   mysql2 (~> 0.3.11)
-  newrelic-redis
-  newrelic_rpm (~> 3.5)
   nokogiri (>= 1.6.8)
   non-stupid-digest-assets (~> 1.0)
   oauth2 (~> 1.4)
@@ -951,7 +938,6 @@ DEPENDENCIES
   rest-client (~> 1.6)
   rmagick (~> 2.15.3)
   roar-rails
-  rpm_contrib
   rspec-html-matchers!
   rspec-rails
   rspec_api_documentation
@@ -968,9 +954,9 @@ DEPENDENCIES
   shoulda-context (~> 1.2.1)
   shoulda-matchers (~> 2.8.0)
   sidekiq (< 6)
+  sidekiq-batch (~> 0.1.1)
   sidekiq-cron
   sidekiq-lock
-  sidekiq-pro (~> 3.4)!
   sidekiq-prometheus-exporter
   simplecov (~> 0.10.0)
   sinatra
@@ -999,7 +985,7 @@ DEPENDENCIES
   unicorn
   unicorn-rails
   webmock (~> 1.21)
-  webpacker (~> 3.3)
+  webpacker (~> 3.5)
   whenever (~> 0.9.7)
   will_paginate (~> 3.1.0)
   xpath (~> 2.1)
@@ -1010,4 +996,4 @@ RUBY VERSION
    ruby 2.3.7p456
 
 BUNDLED WITH
-   1.17.0
+   1.17.1

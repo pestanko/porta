@@ -1,6 +1,7 @@
 const environment = require('./environment')
 
 const customRules = {
+  // TODO: minify css? See https://github.com/webpack-contrib/mini-css-extract-plugin#minimizing-for-production
   module: {
     rules: [
       {
