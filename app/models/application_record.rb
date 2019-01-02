@@ -37,6 +37,8 @@ class ApplicationRecord < ActiveRecord::Base
         ),
           quoted('YYYY-MM-DD HH24:MI:SS') # Reformat to be a valid date to compare with IN
       )
+    elsif System::Database.postgresql?
+      column.op('AT TIME ZONE', quoted(name))
     else
       coalesce(
         convert_tz(column, quoted('UTC'),    quoted(name)),
@@ -57,22 +59,20 @@ class ApplicationRecord < ActiveRecord::Base
     }.freeze
 
     def convert_to_oracle_date_format(format)
-      if System::Database.oracle?
-        ORACLE_DATE_FORMAT_TRANSFORM.reduce(format) do |str, (match, replacement)|
-          str.sub(match, replacement)
-        end
-      else
-        format
+      return format if System::Database.mysql?
+
+      ORACLE_DATE_FORMAT_TRANSFORM.reduce(format) do |str, (match, replacement)|
+        str.sub(match, replacement)
       end
     end
   end
   private_constant :DatabaseUtilities
 
   sifter :date_format do |column, format|
-    if System::Database.oracle?
-      func(:to_char, column, quoted(DatabaseUtilities.convert_to_oracle_date_format(format)))
-    else
+    if System::Database.mysql?
       func(:date_format, column, quoted(format))
+    else
+      func(:to_char, column, quoted(DatabaseUtilities.convert_to_oracle_date_format(format)))
     end
   end
 end
